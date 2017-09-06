@@ -71,15 +71,15 @@ public class UsersHandler implements HttpHandler {
 
     private void handleGetUsers(HttpExchange exchange) throws SQLException, JSONException, IOException {
         byte[] response = connection.getAllUsers().getBytes();
-        exchange.sendResponseHeaders(200, response.length);
         exchange.getResponseHeaders().set("Content-Type", "application/json");
+        exchange.sendResponseHeaders(200, response.length);
         sendResponse(exchange, response);
     }
 
     private void handleGetSpecificUser(HttpExchange exchange, int id) throws SQLException, JSONException, IOException {
         byte[] response = connection.getSpecificUser(id).getBytes();
-        exchange.sendResponseHeaders(200, response.length);
         exchange.getResponseHeaders().set("Content-Type", "application/json");
+        exchange.sendResponseHeaders(200, response.length);
         sendResponse(exchange, response);
     }
 
@@ -98,8 +98,8 @@ public class UsersHandler implements HttpHandler {
         User user = new User(buf.toString());
 
         byte[] response = connection.insertUser(user.getSQLCommand()).getBytes();
-        exchange.sendResponseHeaders(200, response.length);
         exchange.getResponseHeaders().set("Content-Type", "application/json");
+        exchange.sendResponseHeaders(200, response.length);
         sendResponse(exchange, response);
     }
 
