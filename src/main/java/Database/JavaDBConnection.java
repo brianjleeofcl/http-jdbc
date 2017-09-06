@@ -12,7 +12,7 @@ public class JavaDBConnection {
     private Logger log = LoggerFactory.getLogger(JavaDBConnection.class);
     private Connection connection;
 
-    private String url = System.getenv("DATABASE_URL");
+    private String url = "jdbc:" + System.getenv("DATABASE_URL");
     {
         if (url == null) {
             log.info("Environment variable not found; using development setting instead");
