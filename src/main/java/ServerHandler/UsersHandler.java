@@ -7,7 +7,9 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -28,14 +30,22 @@ public class UsersHandler implements HttpHandler {
             case "GET": {
                 switch (params.length) {
                     case 2:
-                        handleGetUsers(exchange);
+                        try {
+                            handleGetUsers(exchange);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            sendInternalError(exchange);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            sendInternalError(exchange);
+                        }
                         break;
                     case 3:
                         try {
                             handleGetSpecificUser(exchange, parseInt(params[2]));
                         } catch (SQLException e) {
                             e.printStackTrace();
-                            sendNotFoundError(exchange);
+                            sendInternalError(exchange);
                         } catch (JSONException e) {
                             e.printStackTrace();
                             sendInternalError(exchange);
@@ -50,7 +60,16 @@ public class UsersHandler implements HttpHandler {
             }
             case "POST": {
                 if (params.length != 2) sendBadRequestError(exchange);
-                else ;
+                else try {
+                    handlePostRequest(exchange);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    sendBadRequestError(exchange);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    sendInternalError(exchange);
+                }
+                break;
             }
             default: sendBadRequestError(exchange);
         }
@@ -59,17 +78,39 @@ public class UsersHandler implements HttpHandler {
     private void handleGetUsers(HttpExchange exchange) throws SQLException, JSONException, IOException {
         byte[] response = connection.getAllUsers().getBytes();
         exchange.sendResponseHeaders(200, response.length);
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
         sendResponse(exchange, response);
     }
 
     private void handleGetSpecificUser(HttpExchange exchange, int id) throws SQLException, JSONException, IOException {
         byte[] response = connection.getSpecificUser(id).getBytes();
         exchange.sendResponseHeaders(200, response.length);
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
         sendResponse(exchange, response);
     }
 
-    private void handlePostRequest(httpExchange exchange) {
-        
+    private void handlePostRequest(HttpExchange exchange) throws IOException, JSONException, SQLException {
+        InputStreamReader isr =  new InputStreamReader(exchange.getRequestBody(),"utf-8");
+        BufferedReader br = new BufferedReader(isr);
+
+        int b;
+        StringBuilder buf = new StringBuilder(512);
+        while ((b = br.read()) != -1) {
+            buf.append((char) b);
+        }
+        br.close();
+        isr.close();
+
+        log.info(buf.toString());
+
+        User user = new User(buf.toString());
+
+        log.info(user.getSQLCommand());
+
+        byte[] response = connection.insertUser(user.getSQLCommand()).getBytes();
+        exchange.sendResponseHeaders(200, response.length);
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
+        sendResponse(exchange, response);
     }
 
     private void sendBadRequestError(HttpExchange exchange) throws IOException {

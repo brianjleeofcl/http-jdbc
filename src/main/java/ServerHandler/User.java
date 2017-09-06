@@ -16,13 +16,12 @@ public class User {
 
     public User(String json) throws JSONException {
         JSONObject object = new JSONObject(json);
-        String firstName = object.getString("first_name");
-        String lastName = object.getString("last_name");
-        String phoneNumber = object.getString("phone_number");
-        new User(firstName, lastName, phoneNumber);
+        this.firstName = object.getString("first_name");
+        this.lastName = object.getString("last_name");
+        this.phoneNumber = object.getString("phone_number");
     }
 
     public String getSQLCommand() {
-        return String.format("('%s', '%s', '$s')", firstName, lastName, phoneNumber);
+        return String.format("('%s', '%s', '%s')", firstName, lastName, phoneNumber);
     }
 }

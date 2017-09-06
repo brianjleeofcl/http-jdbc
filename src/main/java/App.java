@@ -1,4 +1,3 @@
-import Database.JavaDBConnection;
 import ServerHandler.UsersHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.slf4j.Logger;
@@ -19,7 +18,7 @@ public class App {
         } catch (NumberFormatException e) {
             port = 5000;
         } finally {
-            log.info("PORT set to %d", port);
+            log.info("PORT set to {}", port);
         }
     }
 
@@ -28,6 +27,6 @@ public class App {
         server.createContext("/users", new UsersHandler());
         server.setExecutor(null);
         server.start();
-        log.info("Server listening on PORT %d", port);
+        log.info("Server listening on PORT {}", port);
     }
 }

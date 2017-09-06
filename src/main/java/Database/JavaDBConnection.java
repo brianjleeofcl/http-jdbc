@@ -2,11 +2,9 @@ package Database;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.StringWriter;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -58,10 +56,10 @@ public class JavaDBConnection {
     }
 
     public String insertUser(String values) throws SQLException, JSONException {
-        Statement statment = this.connection.createStatement();
+        Statement statement = this.connection.createStatement();
         String sql = "INSERT INTO users (first_name, last_name, phone_number) VALUES" + values + "RETURNING *";
 
-        ResultSet result = statment.executeQuery(sql);
+        ResultSet result = statement.executeQuery(sql);
 
         return this.getJSON(this.processSingleResult(result));
     }
