@@ -17,14 +17,11 @@ import static java.lang.Integer.parseInt;
 
 public class UsersHandler implements HttpHandler {
     private JavaDBConnection connection = new JavaDBConnection();
-    private final Logger log = LoggerFactory.getLogger(UsersHandler.class);
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
         String[] params = exchange.getRequestURI().toString().split("/");
-
-        log.info(Arrays.toString(params));
 
         switch (method) {
             case "GET": {
@@ -101,11 +98,7 @@ public class UsersHandler implements HttpHandler {
         br.close();
         isr.close();
 
-        log.info(buf.toString());
-
         User user = new User(buf.toString());
-
-        log.info(user.getSQLCommand());
 
         byte[] response = connection.insertUser(user.getSQLCommand()).getBytes();
         exchange.sendResponseHeaders(200, response.length);
