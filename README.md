@@ -7,7 +7,7 @@ This is an HTTP server which connects tp a PosgreSQL database. It does not use a
 ## API Reference
 ### route `/users`
 #### Method `GET`
-retrieves all users as a JSON Array.
+retrieves all users as a JSON Array; will send `[]` if no users are saved in database.
 
 #### Method `POST`
 inserts new user information provided as body of request; data should be sent in JSON.
@@ -19,6 +19,12 @@ inserts new user information provided as body of request; data should be sent in
 retrieves specific user which matches the id on database in JSON.
 
 ## Dependencies
+##### development:
+- Java 8
+- PostgreSQL 
+- Gradle
+- IntelliJ IDEA
+
 ##### external:
 - slf4j: Logging
 - junit: Testing
@@ -29,3 +35,6 @@ retrieves specific user which matches the id on database in JSON.
 - java.sql: JDBC
 - com.sun.net.httpserver: HTTP server
 
+## Local Development
+- Database defaults to `testdb`; run `$ createdb testdb` prior to running locally.
+- `$ gradle run` starts the server with default port 5000
